@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VD</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .book {
+            position: relative;
+            border-radius: 10px;
+            width: 90vw; /* Use viewport width for responsiveness */
+            max-width: 320px; /* Maximum width */
+            height: 70vh; /* Use viewport height for responsiveness */
+            max-height: 500px; /* Maximum height */
+            background-color: #ffcccb;
+            box-shadow: 1px 1px 12px #000;
+            transform-style: preserve-3d;
+            perspective: 2000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            padding: 15px;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+
+        .cover {
+            position: absolute;
+            background-color: #ff69b4;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+            transform-origin: 0;
+            box-shadow: 1px 1px 12px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .book:hover .cover {
+            transform: rotateY(-120deg);
+        }
+
+        .content {
+            font-size: 18px;
+            line-height: 1.4;
+            height: 100%;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .cover p {
+            font-size: 24px;
+            transform: rotate(-5deg);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            color: white;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff69b4;
+            border-radius: 3px;
+        }
+
+        /* Keyframe for glow effect */
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 20px rgba(255, 105, 180, 0.8), 0 0 40px rgba(255, 105, 180, 0.6), 0 0 60px rgba(255, 105, 180, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 30px rgba(255, 105, 180, 1), 0 0 50px rgba(255, 105, 180, 0.8), 0 0 70px rgba(255, 105, 180, 0.6);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="book">
+        <div class="content">
+            <p>
+                To : Mummu<br><br>
+                Let me start by saying: “Love is the twisted curse of all time.” (Copied this from JJK tbh but its relatable.)<br><br>
+                Sure, I haven’t saved humanity from curses or solved quantum entanglement, but I did survive your sudden anger nukes on me. (I still dont have a clue why you get angry sometimes.) Well, good for me ig, you look cute when you are angry ツ<br><br>
+                Speaking of quantum entanglement and those sciency stuff, I’ve calculated the mass of my love for you and let’s say it's way past the scale. You will have 0 idea on how much I love you, (you triggered a nuclear fusion of love).. Now it's just a chain reaction. “I am become Love, the destroyer of your mood swings.” ( ͡° ͜ʖ ͡°)<br><br>
+                But let’s get interstellar for a sec. You’re the reason time dilates when we’re together ( guess you are a heavenly body ) in a good way though , cause, 5 hours with you feels like 5 minutes (like that one day we decided to chat from 11 pm to 4 am and still didnt want to go offline)<br><br>
+                So here’s my vow: I’ll be your forever personal therapist, punching bag, pillow and sometimes(you know)(─ ‿ ─).<br><br>
+                Happy Valentine’s Day, my princess and my head eater. Let’s keep holding hands of each other as we walk into the unknowing future ahead of us. (i dont think valentine's day makes any difference though, i love you equally every day fr ❤︎)<br><br>
+                𓂃🖊<br><br>
+                ────୨ৎ────
+            </p>
+        </div>
+        <div class="cover">
+            <p>FOR MY KITTY ❤︎</p>
+        </div>
+    </div>
+    <canvas id="heartCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById("heartCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const hearts = [];
+        const heartSymbol = "❤";
+        const fontSize = 30;
+        const heartCount = 100;
+        const interactionRadius = 80;
+
+        let mouseX = -1000;
+        let mouseY = -1000;
+
+        class Heart {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -canvas.height;
+                this.speed = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.baseSize = fontSize;
+                this.currentSize = this.baseSize;
+            }
+
+            draw() {
+                const gradient = ctx.createRadialGradient(
+                    this.x, this.y, this.currentSize * 0.5,
+                    this.x, this.y, this.currentSize * 1.5
+                );
+                gradient.addColorStop(0, `rgba(255, 0, 0, ${this.opacity * 0.3})`);
+                gradient.addColorStop(1, `rgba(255, 0, 0, ${this.opacity})`);
+
+                ctx.fillStyle = gradient;
+                ctx.font = `${this.currentSize}px Arial`;
+                ctx.fillText(heartSymbol, this.x, this.y);
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = Math.random() * -100;
+                    this.x = Math.random() * canvas.width;
+                    this.opacity = Math.random() * 0.5 + 0.3;
+                }
+
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < interactionRadius) {
+                    const angle = Math.atan2(dy, dx);
+                    this.x += Math.cos(angle) * 2;
+                    this.y += Math.sin(angle) * 2;
+
+                    this.currentSize = Math.min(this.baseSize * 1.8, 50);
+                } else {
+                    this.currentSize = this.baseSize;
+                }
+            }
+        }
+
+        for (let i = 0; i < heartCount; i++) {
+            hearts.push(new Heart());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            hearts.forEach(heart => {
+                heart.update();
+                heart.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        canvas.addEventListener("mousemove", (event) => {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        });
+
+        canvas.addEventListener("touchmove", (event) => {
+            const touch = event.touches[0];
+            mouseX = touch.clientX;
+            mouseY = touch.clientY;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            mouseX = -1000;
+            mouseY = -1000;
+        });
+
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
